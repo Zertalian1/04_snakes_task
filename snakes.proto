@@ -1,5 +1,5 @@
 syntax = "proto2";
-package snake;
+package snakes;
 option java_package = "me.ippolitov.fit.snakes";
 option java_outer_classname = "SnakesProto";
 
