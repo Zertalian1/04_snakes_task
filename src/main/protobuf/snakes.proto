@@ -81,7 +81,7 @@ message GameAnnouncement {
 
 /* Сообщение от одного участника игры другому участнику */
 message GameMessage {
-    // Ничего не меняем, просто говорим что мы живы
+    // Ничего не меняем, просто говорим что мы живы каждые 100 мс
     message PingMsg {
     }
     // Повернуть голову змеи
@@ -107,7 +107,8 @@ message GameMessage {
     }
     // Присоединиться к игре
     message JoinMsg {
-        required PlayerType player_type = 1; // Тип присоединяющегося игрока
+        optional PlayerType player_type = 1 [default = HUMAN]; // Тип присоединяющегося игрока
+        optional bool only_view = 2 [default = false]; // Если хотим только понаблюдать, но не играть
     }
     // Ошибка операции (например отказ в присоединении к игре, т.к. нет места на поле)
     message ErrorMsg {
@@ -115,14 +116,17 @@ message GameMessage {
     }
     /* Сообщение о смене роли:
      * 1. от заместителя другим игрокам о том, что пора начинать считать его главным (sender_role = MASTER)
-     * 2. от выходящего игрока (sender_role = VIEWER)
-     * 3. в комбинации с 1,2 или отдельно от них: назначение нового заместителя (receiver_role = DEPUTY)
+     * 2. от осознанно выходящего игрока (sender_role = VIEWER)
+     * 3. от главного к умершему игроку (receiver_role = VIEWER)
+     * 4. в комбинации с 1,2 или отдельно от них: назначение кого-то заместителем (receiver_role = DEPUTY)
      */
     message RoleChangeMsg {
         optional NodeRole sender_role = 1;
         optional NodeRole receiver_role = 2;
     }
     required int64 msg_seq = 1;   // Порядковый номер сообщения, уникален для отправителя в пределах игры, монотонно возрастает
+    optional int32 sender_id = 10;   // ID игрока-отправителя этого сообщения (обязательно для AckMsg и RoleChangeMsg)
+    optional int32 receiver_id = 11; // ID игрока-получателя этого сообщения (обязательно для AckMsg и RoleChangeMsg)
     oneof Type {
         PingMsg ping = 2;
         SteerMsg steer = 3;
