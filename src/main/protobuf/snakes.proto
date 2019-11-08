@@ -72,13 +72,6 @@ message GameState {
     required GameConfig config = 5;   // Параметры игры
 }
 
-/* Уведомление об идущей игре, регулярно отправляется multicast-ом */
-message GameAnnouncement {
-    required GamePlayers players = 1;            // Текущие игроки
-    required GameConfig config = 2;              // Параметры игры
-    optional bool can_join = 3 [default = true]; // Можно ли новому игроку присоединиться к игре (есть ли место на поле)
-}
-
 /* Сообщение от одного участника игры другому участнику */
 message GameMessage {
     // Ничего не меняем, просто говорим что мы живы каждые 100 мс
@@ -101,9 +94,11 @@ message GameMessage {
     message StateMsg {
         required GameState state = 1; // Состояние игрового поля
     }
-    // Уведомление об идущей игре
+    // Уведомление об идущей игре, регулярно отправляется multicast-ом
     message AnnouncementMsg {
-        required GameAnnouncement announcement = 1; // Уведомление об идущей игре
+        required GamePlayers players = 1;            // Текущие игроки
+        required GameConfig config = 2;              // Параметры игры
+        optional bool can_join = 3 [default = true]; // Можно ли новому игроку присоединиться к игре (есть ли место на поле)
     }
     // Присоединиться к игре
     message JoinMsg {
