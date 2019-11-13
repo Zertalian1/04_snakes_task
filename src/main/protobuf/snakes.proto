@@ -3,12 +3,12 @@ package snakes;
 option java_package = "me.ippolitov.fit.snakes";
 option java_outer_classname = "SnakesProto";
 
-// Роль узла в топологии
+// Роль узла в топологии связей узлов в пределах игры
 enum NodeRole {
     NORMAL = 0; // Обычный узел, лист в топологии "звезда"
     MASTER = 1; // Главный узел, центр в топологии "звезда"
     DEPUTY = 2; // Заместитель главного узла
-    VIEWER = 3; // Наблюдатель, то же что обычный, но не имеет змеи в статусе ALIVE, только получает обновления статуса
+    VIEWER = 3; // Наблюдатель, похож на NORMAL, но не имеет змеи в статусе ALIVE, только получает обновления статуса
 }
 
 // Тип игрока
@@ -21,7 +21,7 @@ enum PlayerType {
 message GamePlayer {
     required string name = 1;       // Имя игрока (для отображения в интерфейсе)
     required int32 id = 2;          // Уникальный идентификатор игрока в пределах игры
-    required string ip_address = 3; // IPv4 или IPv6 адрес игрока в виде строки
+    required string ip_address = 3; // IPv4 или IPv6 адрес игрока в виде строки (отправитель не знает свой IP, поэтому указывает тут пустую строку)
     required int32 port = 4;        // Порт UDP-сокета игрока
     required NodeRole role = 5;     // Роль узла в топологии
     optional PlayerType type = 6 [default = HUMAN]; // Тип игрока
@@ -114,6 +114,7 @@ message GameMessage {
      * 2. от осознанно выходящего игрока (sender_role = VIEWER)
      * 3. от главного к умершему игроку (receiver_role = VIEWER)
      * 4. в комбинации с 1,2 или отдельно от них: назначение кого-то заместителем (receiver_role = DEPUTY)
+     * 5. в комбинации с 2 от главного узла заместителю о том, что он становится главным (receiver_role = MASTER)
      */
     message RoleChangeMsg {
         optional NodeRole sender_role = 1;
