@@ -82,19 +82,19 @@ message GameState {
     required GameConfig config = 5;   // Параметры игры
 }
 
-/* Сообщение от одного участника игры другому участнику */
+// Общий формат любого сообщения
 message GameMessage {
-    // Ничего не меняем, просто говорим что мы живы каждые 100 мс
+    // Ничего не меняем, просто говорим что мы живы с интервалом ping_delay_ms
     message PingMsg {
     }
-    // Повернуть голову змеи
+    // Не-центральный игрок просит повернуть голову змеи
     message SteerMsg {
         required Direction direction = 1; // Куда повернуть на следующем шаге
     }
     // Подтверждение сообщения с таким же seq
     message AckMsg {
     }
-    // Сообщаем игрокам состояние игры
+    // Центральный узел сообщает отсальным игрокам состояние игры
     message StateMsg {
         required GameState state = 1; // Состояние игрового поля
     }
@@ -104,7 +104,7 @@ message GameMessage {
         required GameConfig config = 2;              // Параметры игры
         optional bool can_join = 3 [default = true]; // Можно ли новому игроку присоединиться к игре (есть ли место на поле)
     }
-    // Присоединиться к игре
+    // Новый игрок хочет присоединиться к идущей игре
     message JoinMsg {
         optional PlayerType player_type = 1 [default = HUMAN]; // Тип присоединяющегося игрока
         optional bool only_view = 2 [default = false]; // Если хотим только понаблюдать, но не играть
@@ -127,6 +127,7 @@ message GameMessage {
     required int64 msg_seq = 1;   // Порядковый номер сообщения, уникален для отправителя в пределах игры, монотонно возрастает
     optional int32 sender_id = 10;   // ID игрока-отправителя этого сообщения (обязательно для AckMsg и RoleChangeMsg)
     optional int32 receiver_id = 11; // ID игрока-получателя этого сообщения (обязательно для AckMsg и RoleChangeMsg)
+    // Тип сообщения
     oneof Type {
         PingMsg ping = 2;
         SteerMsg steer = 3;
