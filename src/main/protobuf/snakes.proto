@@ -25,6 +25,7 @@ message GamePlayer {
     required int32 port = 4;        // Порт UDP-сокета игрока
     required NodeRole role = 5;     // Роль узла в топологии
     optional PlayerType type = 6 [default = HUMAN]; // Тип игрока
+    required int32 score = 7;       // Число очков, которые набрал игрок
 }
 
 /* Параметры идущей игры (не должны меняться в процессе игры) */
@@ -108,6 +109,7 @@ message GameMessage {
     message JoinMsg {
         optional PlayerType player_type = 1 [default = HUMAN]; // Тип присоединяющегося игрока
         optional bool only_view = 2 [default = false]; // Если хотим только понаблюдать, но не играть
+        required string name = 3; // Имя игрока
     }
     // Ошибка операции (например отказ в присоединении к игре, т.к. нет места на поле)
     message ErrorMsg {
