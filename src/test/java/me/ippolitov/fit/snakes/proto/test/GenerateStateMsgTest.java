@@ -8,15 +8,10 @@ import org.junit.Test;
 
 import static me.ippolitov.fit.snakes.SnakesProto.*;
 
-public class GenerateStateMsg {
-    /** Генерирует пример сообщения с состоянием, соответствующим картинке example1.png */
+public class GenerateStateMsgTest {
+    /** Генерирует пример сообщения с состоянием поля, соответствующим картинке example1.png */
     @Test
     public void testGenerateStateMsg() {
-        GameConfig config = GameConfig.newBuilder()
-                .setWidth(10)
-                .setHeight(10)
-                // Все остальные параметры имеют значения по умолчанию
-                .build();
         Snake snake = Snake.newBuilder()
                 .setPlayerId(1)
                 .setHeadDirection(Direction.LEFT)
@@ -30,8 +25,7 @@ public class GenerateStateMsg {
         GamePlayer playerBob = GamePlayer.newBuilder()
                 .setId(1)
                 .setRole(NodeRole.MASTER)
-                .setIpAddress("") // MASTER не отправляет собственный IP
-                .setPort(20101)
+                // MASTER не отправляет собственные IP и порт
                 .setName("Bob")
                 .setScore(8)
                 .build();
@@ -42,7 +36,6 @@ public class GenerateStateMsg {
                 .setStateOrder(193)
                 .addSnakes(snake)
                 .setPlayers(players)
-                .setConfig(config)
                 .addFoods(coord(7, 6))
                 .addFoods(coord(8, 7))
                 .build();
@@ -55,7 +48,7 @@ public class GenerateStateMsg {
                 .build();
 
         byte[] bytesToSendViaDatagramPacket = gameMessage.toByteArray();
-        Assert.assertEquals(81, bytesToSendViaDatagramPacket.length);
+        Assert.assertEquals(69, bytesToSendViaDatagramPacket.length);
     }
 
     private GameState.Coord coord(int x, int y) {

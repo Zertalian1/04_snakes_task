@@ -14,15 +14,15 @@ enum NodeRole {
 // Тип игрока
 enum PlayerType {
     HUMAN = 0; // Живой пользователь
-    ROBOT = 1;  // Робот, управляет своей змеёй с помощью алгоритма (вне задачи, для желающих)
+    ROBOT = 1; // Робот, управляет своей змеёй с помощью алгоритма (реализовано на "сервере")
 }
 
 // Игрок
 message GamePlayer {
     required string name = 1;       // Имя игрока (для отображения в интерфейсе)
     required int32 id = 2;          // Уникальный идентификатор игрока в пределах игры
-    required string ip_address = 3; // IPv4 или IPv6 адрес игрока в виде строки (отправитель не знает свой IP, поэтому указывает тут пустую строку)
-    required int32 port = 4;        // Порт UDP-сокета игрока
+    optional string ip_address = 3; // IPv4 или IPv6 адрес игрока в виде строки. Отсутствует в описании игрока-отправителя сообщения
+    optional int32 port = 4;        // Порт UDP-сокета игрока. Отсутствует в описании игрока-отправителя сообщения
     required NodeRole role = 5;     // Роль узла в топологии
     optional PlayerType type = 6 [default = HUMAN]; // Тип игрока
     required int32 score = 7;       // Число очков, которые набрал игрок
@@ -74,16 +74,23 @@ message GameState {
          * в частности последняя точка хранит смещение хвоста змеи относительно предыдущей "ключевой" точки. */
         repeated Coord points = 2;
         required SnakeState state = 3 [default = ALIVE]; // статус змеи в игре
-        required Direction head_direction = 4; // Направление, в котором повёрнута голова змейки в текущий момент
+        required Direction head_direction = 4; // Направление, в котором "повёрнута" голова змейки в текущий момент
     }
     required int32 state_order = 1;   // Порядковый номер состояния, уникален в пределах игры, монотонно возрастает
     repeated Snake snakes = 2;        // Список змей
     repeated Coord foods = 3;         // Список клеток с едой
     required GamePlayers players = 4; // Актуальнейший список игроков
-    required GameConfig config = 5;   // Параметры игры
 }
 
-// Общий формат любого сообщения
+message GameAnnouncement {
+  required GamePlayers players = 1;            // Текущие игроки
+  required GameConfig config = 2;              // Параметры игры
+  optional bool can_join = 3 [default = true]; // Можно ли новому игроку присоединиться к игре (есть ли место на поле)
+  required string game_id = 4;                 // Глобально уникальный идентификатор игры (UUID), например 6F9619FF-8B86-D011-B42D-00CF4FC964FF
+  required string started_time = 5;            // Время, когда игра была начата, в формате ISO 8601 с точностью до секунд, например 2022-09-14T17:24:48Z
+}
+
+// Общий формат любого UDP-сообщения
 message GameMessage {
     // Ничего не меняем, просто говорим что мы живы с интервалом ping_delay_ms
     message PingMsg {
@@ -95,21 +102,23 @@ message GameMessage {
     // Подтверждение сообщения с таким же seq
     message AckMsg {
     }
-    // Центральный узел сообщает отсальным игрокам состояние игры
+    // Центральный узел сообщает остальным игрокам состояние игры
     message StateMsg {
         required GameState state = 1; // Состояние игрового поля
     }
-    // Уведомление об идущей игре, регулярно отправляется multicast-ом
+    // Уведомление об идущих играх, регулярно отправляется multicast-ом или в ответ на DiscoverMsg
     message AnnouncementMsg {
-        required GamePlayers players = 1;            // Текущие игроки
-        required GameConfig config = 2;              // Параметры игры
-        optional bool can_join = 3 [default = true]; // Можно ли новому игроку присоединиться к игре (есть ли место на поле)
+        repeated GameAnnouncement games = 1; // Идущие игры (не менее одной, а на сервере их может быть несколько)
+    }
+    // Запрос информации об идущих играх
+    message DiscoverMsg {
     }
     // Новый игрок хочет присоединиться к идущей игре
     message JoinMsg {
         optional PlayerType player_type = 1 [default = HUMAN]; // Тип присоединяющегося игрока
         optional bool only_view = 2 [default = false]; // Если хотим только понаблюдать, но не играть
         required string name = 3; // Имя игрока
+        required string game_id = 4; // Глобально уникальный идентификатор игры (UUID), к которой хотим присоединиться
     }
     // Ошибка операции (например отказ в присоединении к игре, т.к. нет места на поле)
     message ErrorMsg {
@@ -139,5 +148,6 @@ message GameMessage {
         JoinMsg join = 7;
         ErrorMsg error = 8;
         RoleChangeMsg role_change = 9;
+        DiscoverMsg discover = 12;
     }
 }
