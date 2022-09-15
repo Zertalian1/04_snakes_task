@@ -112,9 +112,9 @@ message GameMessage {
     // Новый игрок хочет присоединиться к идущей игре
     message JoinMsg {
         optional PlayerType player_type = 1 [default = HUMAN]; // Тип присоединяющегося игрока
-        optional bool only_view = 2 [default = false]; // Если хотим только понаблюдать, но не играть
         required string name = 3; // Имя игрока
         required string game_id = 4; // Глобально уникальный идентификатор игры (UUID), к которой хотим присоединиться
+        required NodeRole requested_role = 5; // NORMAL, если хотим играть; VIEWER, если хотим только понаблюдать; остальные значения недопустимы
     }
     // Ошибка операции (например отказ в присоединении к игре, т.к. нет места на поле)
     message ErrorMsg {
