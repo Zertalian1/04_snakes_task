@@ -79,11 +79,11 @@ message GameState {
 }
 
 message GameAnnouncement {
-  required GamePlayers players = 1;            // Текущие игроки
-  required GameConfig config = 2;              // Параметры игры
-  optional bool can_join = 3 [default = true]; // Можно ли новому игроку присоединиться к игре (есть ли место на поле)
-  required string game_id = 4;                 // Глобально уникальный идентификатор игры (UUID), например 6F9619FF-8B86-D011-B42D-00CF4FC964FF
-  required string started_time = 5;            // Время, когда игра была начата, в формате ISO 8601 с точностью до секунд, например 2022-09-14T17:24:48Z
+    required GamePlayers players = 1;            // Текущие игроки
+    required GameConfig config = 2;              // Параметры игры
+    optional bool can_join = 3 [default = true]; // Можно ли новому игроку присоединиться к игре (есть ли место на поле)
+    required string game_id = 4;                 // Глобально уникальный идентификатор игры (UUID), например 6F9619FF-8B86-D011-B42D-00CF4FC964FF
+    required string started_time = 5;            // Время, когда игра была начата, в формате ISO 8601 с точностью до секунд, например 2022-09-14T17:24:48Z
 }
 
 // Общий формат любого UDP-сообщения
