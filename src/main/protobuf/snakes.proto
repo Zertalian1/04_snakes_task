@@ -82,8 +82,7 @@ message GameAnnouncement {
     required GamePlayers players = 1;            // Текущие игроки
     required GameConfig config = 2;              // Параметры игры
     optional bool can_join = 3 [default = true]; // Можно ли новому игроку присоединиться к игре (есть ли место на поле)
-    required string game_id = 4;                 // Глобально уникальный идентификатор игры (UUID), например 6F9619FF-8B86-D011-B42D-00CF4FC964FF
-    required string started_time = 5;            // Время, когда игра была начата, в формате ISO 8601 с точностью до секунд, например 2022-09-14T17:24:48Z
+    required string game_name = 4;               // Глобально уникальное имя игры, например "my game"
 }
 
 // Общий формат любого UDP-сообщения
@@ -112,8 +111,8 @@ message GameMessage {
     // Новый игрок хочет присоединиться к идущей игре
     message JoinMsg {
         optional PlayerType player_type = 1 [default = HUMAN]; // Тип присоединяющегося игрока
-        required string name = 3; // Имя игрока
-        required string game_id = 4; // Глобально уникальный идентификатор игры (UUID), к которой хотим присоединиться
+        required string player_name = 3; // Имя игрока
+        required string game_name = 4;   // Глобально уникальное имя игры, к которой хотим присоединиться
         required NodeRole requested_role = 5; // NORMAL, если хотим играть; VIEWER, если хотим только понаблюдать; остальные значения недопустимы
     }
     // Ошибка операции (например отказ в присоединении к игре, т.к. нет места на поле)
