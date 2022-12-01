@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#handleKeyboard" prefHeight="741.0" prefWidth="1207.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.snake1.client.MainWindowController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#handleKeyboard" prefHeight="741.0" prefWidth="1207.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.snake.client.MainWindowController">
     <bottom>
         <HBox alignment="TOP_RIGHT" nodeOrientation="LEFT_TO_RIGHT" prefWidth="996.0" style="-fx-background-color: #bfbfbf;" BorderPane.alignment="TOP_LEFT">
             <Label fx:id="errorLabel" text="Here you will see some messages" textAlignment="RIGHT">
