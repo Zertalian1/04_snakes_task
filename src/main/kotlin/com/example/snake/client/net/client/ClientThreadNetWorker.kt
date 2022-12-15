@@ -1,9 +1,13 @@
 package com.example.snake.client.net.client
 
-import com.example.snake.client.Message
+import com.example.snake.client.GameSetings.SettingsProvider
+import com.example.snake.client.Message.Message
+import com.example.snake.client.Message.MessageId
 import com.example.snake.client.net.ConnectionEndpoint
 import com.example.snake.client.net.MessageWrapper
 import com.example.snake.client.net.NetWorker
+import com.example.snake.client.net.SocketEndpoint
+import com.example.snake.client.net.errors.ErrorManager
 import com.example.snake.proto.SnakesProto
 import java.net.InetAddress
 import java.util.*
@@ -27,7 +31,7 @@ class ClientThreadNetWorker : NetWorker {
         return this
     }
 
-    override fun clearQueue(): Deque<Message> {
+    override fun clearQueue(): ArrayDeque<Message> {
         val tmp = ArrayDeque(outgoingQueue)
         outgoingQueue.clear()
         return tmp
@@ -66,7 +70,6 @@ class ClientThreadNetWorker : NetWorker {
                 }
             }
 
-
             //таймауты и переотправка сообщений
             var serverProblems = false
             if (pendingMessage != null) {
@@ -81,12 +84,12 @@ class ClientThreadNetWorker : NetWorker {
             }
 
             if (serverProblems) {
-                val error = SnakesProto.GameMessage.newBuilder().setError(
+                val error = SnakesProto.GameMessage.newBuilder().setError(  // переписать
                     SnakesProto.GameMessage.ErrorMsg.newBuilder().setErrorMessage(
                         ErrorManager.wrap(-1)
                     )
                 )
-                    .setMsgSeq(MessageIdProvider.getNextMessageId())
+                    .setMsgSeq(MessageId.getNextMessageId())
                     .build()
                 notifyMembers(Message(error, InetAddress.getLoopbackAddress(), -1), error.typeCase)
                 pendingMessage = null

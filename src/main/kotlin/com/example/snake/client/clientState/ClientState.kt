@@ -1,4 +1,4 @@
-package com.example.snake.client
+package com.example.snake.client.clientState
 
 import com.example.snake.proto.SnakesProto
 import java.net.InetAddress

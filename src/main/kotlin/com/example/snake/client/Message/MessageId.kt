@@ -1,4 +1,4 @@
-package com.example.snake.client
+package com.example.snake.client.Message
 
 object MessageId {
     private var nextMessageId: Long = 0L;

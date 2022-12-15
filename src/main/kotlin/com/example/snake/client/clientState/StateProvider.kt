@@ -1,4 +1,4 @@
-package com.example.snake.client
+package com.example.snake.client.clientState
 
 object StateProvider {
     private val state = ClientState()

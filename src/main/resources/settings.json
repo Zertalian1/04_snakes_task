@@ -1,0 +1,19 @@
+{
+    "screenSizeX": 1280,
+    "screenSizeY": 720,
+    "mainWindowTitle": "Snake FX",
+
+    "multicastAddress": "239.192.0.4",
+    "multicastPort": 9192,
+    "announceDelayMs": 1000,
+
+    "playerName": "Name",
+
+    "playfieldWidth": 40,
+    "playfieldHeight": 30,
+    "foodStatic": 1,
+
+    "stateTickDelayMs": 100,
+    "pingDelayMs": 100,
+    "timeoutDelayMs": 1000000
+}
